@@ -29,13 +29,13 @@ class SlugifyFactoryTest extends TestCase
     {
         $serviceLocator = $this->getServiceLocator();
 
-        $this->assertInstanceOf('BaconStringUtils\Filter\Slugify', $this->factory->createService($serviceLocator));
+        $this->assertInstanceOf('BaconStringUtils\Filter\Slugify', $this->factory->__invoke($serviceLocator));
     }
 
     public function testReturnsFilterWithSlugifier()
     {
         $serviceLocator = $this->getServiceLocator();
-        $slugify = $this->factory->createService($serviceLocator);
+        $slugify = $this->factory->__invoke($serviceLocator);
         $slugifier = $slugify->getSlugifier();
 
         $this->assertInstanceOf('BaconStringUtils\Slugifier', $slugifier);

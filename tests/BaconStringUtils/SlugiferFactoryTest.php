@@ -31,7 +31,7 @@ class SlugiferFactoryTest extends TestCase
     public function testReturnsSlugifierAndUniDecoder()
     {
         $serviceLocator = $this->getServiceLocator();
-        $slugifier = $this->factory->createService($serviceLocator);
+        $slugifier = $this->factory->__invoke($serviceLocator);
 
         $this->assertInstanceOf('BaconStringUtils\Slugifier', $slugifier);
         $this->assertInstanceOf('BaconStringUtils\UniDecoder', $slugifier->getUniDecoder());
