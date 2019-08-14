@@ -9,6 +9,7 @@
 
 namespace BaconStringUtils;
 
+use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 
 class SlugiferFactoryTest extends TestCase
@@ -25,27 +26,30 @@ class SlugiferFactoryTest extends TestCase
 
     public function testFactoryImplementsInterface()
     {
-        $this->assertInstanceOf('Zend\ServiceManager\FactoryInterface', $this->factory);
+        $this->assertInstanceOf('Zend\ServiceManager\Factory\FactoryInterface', $this->factory);
     }
 
     public function testReturnsSlugifierAndUniDecoder()
     {
-        $serviceLocator = $this->getServiceLocator();
-        $slugifier = $this->factory->__invoke($serviceLocator);
+        $container = $this->getContainer();
+        $slugifier = $this->factory->__invoke($container, 'slug');
 
         $this->assertInstanceOf('BaconStringUtils\Slugifier', $slugifier);
         $this->assertInstanceOf('BaconStringUtils\UniDecoder', $slugifier->getUniDecoder());
     }
 
-    protected function getServiceLocator()
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|ContainerInterface
+     */
+    protected function getContainer()
     {
         $decoderMock = $this->getMock('BaconStringUtils\UniDecoder');
-        $serviceLocator = $this->getMock('\Zend\ServiceManager\ServiceLocatorInterface');
-        $serviceLocator->expects($this->any())
+        $container = $this->getMock('\Interop\Container\ContainerInterface');
+        $container->expects($this->any())
                 ->method('get')
                 ->with('BaconStringUtils\UniDecoder')
                 ->will($this->returnValue($decoderMock));
 
-        return $serviceLocator;
+        return $container;
     }
 }
