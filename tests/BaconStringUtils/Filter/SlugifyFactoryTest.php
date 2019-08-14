@@ -9,6 +9,7 @@
 
 namespace BaconStringUtils\Filter;
 
+use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 
 class SlugifyFactoryTest extends TestCase
@@ -20,41 +21,44 @@ class SlugifyFactoryTest extends TestCase
         $this->factory = new SlugifyFactory();
     }
 
-    public function testFactoryImplementsIterface()
+    public function testFactoryImplementsInterface()
     {
-        $this->assertInstanceOf('Zend\ServiceManager\FactoryInterface', $this->factory);
+        $this->assertInstanceOf('Zend\ServiceManager\Factory\FactoryInterface', $this->factory);
     }
 
     public function testReturnsFilter()
     {
-        $serviceLocator = $this->getServiceLocator();
+        $container = $this->getContainer();
 
-        $this->assertInstanceOf('BaconStringUtils\Filter\Slugify', $this->factory->__invoke($serviceLocator));
+        $this->assertInstanceOf('BaconStringUtils\Filter\Slugify', $this->factory->__invoke($container, 'slug'));
     }
 
     public function testReturnsFilterWithSlugifier()
     {
-        $serviceLocator = $this->getServiceLocator();
-        $slugify = $this->factory->__invoke($serviceLocator);
+        $container = $this->getContainer();
+        $slugify = $this->factory->__invoke($container, 'slug');
         $slugifier = $slugify->getSlugifier();
 
         $this->assertInstanceOf('BaconStringUtils\Slugifier', $slugifier);
     }
 
-    protected function getServiceLocator()
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|ContainerInterface
+     */
+    protected function getContainer()
     {
         $slugifier = $this->getMock('BaconStringUtils\Slugifier');
 
-        $serviceLocator = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
-        $serviceLocator->expects($this->any())
+        $container = $this->getMock('\Interop\Container\ContainerInterface');
+        $container->expects($this->any())
                 ->method('get')
                 ->with('BaconStringUtils\Slugifier')
                 ->will($this->returnValue($slugifier));
 
 
         $pluginManager = $this->getMock('Zend\Filter\FilterPluginManager');
-        $pluginManager->expects($this->any())->method('getServiceLocator')->will($this->returnValue($serviceLocator));
+        $pluginManager->expects($this->any())->method('getServiceLocator')->will($this->returnValue($container));
 
-        return $pluginManager;
+        return $container;
     }
 }

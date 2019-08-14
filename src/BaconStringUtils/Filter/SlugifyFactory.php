@@ -9,8 +9,8 @@
 
 namespace BaconStringUtils\Filter;
 
+use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Class SlugifyFactory
@@ -19,12 +19,14 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class SlugifyFactory implements FactoryInterface
 {
     /**
-     * @param ServiceLocatorInterface $serviceLocator
-     * @return Slugify|mixed
+     * @param ContainerInterface $locator
+     * @param string $requestedName
+     * @param array|null $options
+     * @return Slugify|object
      */
-    public function __invoke(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $locator, $requestedName, array $options = null)
     {
-        $slugifier = $serviceLocator->getServiceLocator()->get('BaconStringUtils\Slugifier');
+        $slugifier = $locator->get('BaconStringUtils\Slugifier');
         $slugify   = new Slugify();
         $slugify->setSlugifier($slugifier);
 

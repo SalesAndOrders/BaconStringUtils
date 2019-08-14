@@ -9,8 +9,8 @@
 
 namespace BaconStringUtils;
 
+use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Class SlugifierFactory
@@ -19,12 +19,14 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class SlugifierFactory implements FactoryInterface
 {
     /**
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param ContainerInterface $locator
+     * @param string $requestedName
+     * @param array|null $options
      * @return Slugifier|object
      */
-    public function __invoke(ServiceLocatorInterface $serviceLocator)
+    public function __invoke(ContainerInterface $locator, $requestedName, array $options = null)
     {
-        $decoder   = $serviceLocator->get('BaconStringUtils\UniDecoder');
+        $decoder   = $locator->get('BaconStringUtils\UniDecoder');
         $slugifier = new Slugifier();
         $slugifier->setUniDecoder($decoder);
 
